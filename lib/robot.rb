@@ -18,6 +18,10 @@ class Robot
     @default_damage  = 5
   end
 
+  def health
+    self.health
+  end
+
   def move_left
     self.position[0] -= 1
   end
@@ -40,6 +44,7 @@ class Robot
       @equipped_weapon = item
     end
      @items << item
+     item.feed(self) if item.is_a?(BoxOfBolts) && self.health <= 80
   end
 
   def items_weight
