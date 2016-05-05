@@ -3,7 +3,7 @@ class Weapon < Item
 
   def initialize(name, weight, damage)
     @damage = damage
-    super(name,weight)
+    super(name, weight)
   end
 
   def hit(robot)
