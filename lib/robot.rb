@@ -1,11 +1,21 @@
+
+
 class Robot
+
+  class RobotAlreadyDeadError < StandardError
+  end
+
+  class UnattackableEnemy < StandardError
+  end
+
   attr_accessor :position, :items, :health, :equipped_weapon
 
   def initialize(position = [0,0], items = [], health = 100, equipped_weapon = nil)
-    @position = position
-    @items    = items
-    @health   = health
+    @position        = position
+    @items           = items
+    @health          = health
     @equipped_weapon = equipped_weapon
+    @default_damage  = 5
   end
 
   def move_left
@@ -48,11 +58,31 @@ class Robot
     self.health = 100 if self.health > 100
   end
 
+  def heal!(amount)
+    raise RobotAlreadyDeadError, "You cannot heal dead robots." if self.health <= 0
+    self.health += amount
+    self.health = 100 if self.health > 100
+  end
+
+  def close_enough?(robot1,robot2)
+    (-1..1).include?(robot1.position[1] - robot2.position[1])
+  end
+
   def attack(robot)
     if self.equipped_weapon == nil
-      robot.wound(5)
+      robot.wound(@default_damage) if close_enough?(self,robot)
     else 
-      self.equipped_weapon.hit(robot)
+      self.equipped_weapon.hit(robot) if close_enough?(self,robot)
+    end
+  end
+
+  def attack!(robot)
+    raise UnattackableEnemy, "You can only attack robots" unless robot.is_a? Robot
+    raise UnattackableEnemy, "You can only attack live robots" if robot.health <= 0
+    if self.equipped_weapon == nil
+      robot.wound(@default_damage) if close_enough?(self,robot)
+    else 
+      self.equipped_weapon.hit(robot) if close_enough?(self,robot)
     end
   end
 
