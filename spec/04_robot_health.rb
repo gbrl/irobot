@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe Robot do
   before :each do
-    @robot = Robot.new
+    @robot = Robot.new(shields=0)
   end
 
   describe "#health" do
@@ -13,8 +13,8 @@ describe Robot do
 
   describe "#wound" do
     it "decreases health" do
-      @robot.wound(20)
-      expect(@robot.health).to eq(80)
+      @robot.wound(60)
+      expect(@robot.health).to eq(90)
     end
 
     it "doesn't decrease health below 0" do
@@ -27,7 +27,7 @@ describe Robot do
     it "increases health" do
       @robot.wound(40)
       @robot.heal(20)
-      expect(@robot.health).to eq(80)
+      expect(@robot.health).to eq(100)
     end
 
     it "doesn't increase health over 100" do
